@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a collection of python modules that interact with the Ryze Tello drone.
+This is a collection of python-based sample code that interact with the Ryze Tello drone.
 
 ## Project Description
 
