@@ -12,42 +12,13 @@ set pythonLib="C:\Python27\Lib\site-packages\"
 set /a maxRetry=3
 set /a retryCount=0
 echo ------------------------------------------------------
-::08.27 改变ffmpeg 从develop版本变为share版本
-::08.27 改变libboost 从ffmpeg包含变为独立版本
-::08.27 暂时不需要libopencv-dev python-opencv opencv-python dlib python-imaging-tk
-::08.27 h264库为现有工程
-::08.27 拷贝h264的dll、libboost的dll以及ffmpeg的dll进c:\python27\lib\site-packages
-::08.27 libboost-all-dev 变为预编译库版本
-::08.28 增加了本地提权功能
-::08.28 增加了与提权后配套的目录切换功能
-::08.28 增加了MD5校验功能
-::08.29 增加了MD5重试3次就跳过的功能
-::08.29 增加了MD5检查工具不存在就跳过检查的功能
-::08.31 增加了当前目录下如果有符合的MD5值的文件，就跳过下载
-::08.31 FAQ 奇怪的dll缺失问题 api-ms-win-downlevel-shlwapi-l1-1-0.dll
-
-::TODO: 增加安装包自动获取名字的功能
-::TODO: 判断是否已有python2.7
-::TODO: 其他版本已有环境变量问题 使用find命令
-::TODO: Jscript中增加判断参数格式功能
-::TODO: 自动检测后缀名并去除
-::TODO: MD5检查可以放进down里调用
-::TODO: 如果文件夹下已有正确MD5的文件 那么就使用现有文件
-::TODO: 自动判断并创建download目录，将下载的文件全部放入download目录中
-::TODO: 加入探测失败系统类型后，手动选择功能
-
-::done: 获取windows版本
-::done: 完善win32版本的地址
-::done: 校验MD5值
-::done: Jscript中增加函数传参
-::done: 判断是否已有python2.7环境变量
 
 ::-------------------down python2.7 and install-------------------
 echo ------------------------------------------------------
 echo                Downloading python2.7                  
 echo ------------------------------------------------------
 ::此条注册表项用于开启ssl、tls多个版本的支持，用于解决python官网拒绝访问的问题
-REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v SecureProtocols /t REG_DWORD /d 2728 /f
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v SecureProtocols /t REG_DWORD /d 2728 /f >nul
 set /a retryCount=0
 for %%# in (certutil.exe) do (
 	if not exist "%%~f$PATH:#" (
@@ -109,12 +80,6 @@ if "%MD5pass%" == "NO" (
 python %pipPackage%
 python -m pip install -U pip
 :downpipend
-::-------------------Cygwin g++的安装-------------------
-rem call :down %CygwinDown% %CygwinPackage%
-rem runas /user:administrator %CygwinPackage% -q -D -N -n -d -O -S %CygwinSource%
-rem runas /user:administrator %CygwinPackage% -q -P %CygwinPackagegpp% -S %CygwinSource%
-::-------------------cmake的安装-------------------
-rem python -m pip install cmake
 ::-------------------libboost-all-dev 的安装-------------------
 echo ------------------------------------------------------
 echo                Downloading libboost                   
@@ -191,7 +156,7 @@ if "%MD5pass%" == "NO" (
 		goto downvs2013
 	)
 )
-call %vs2013package% /SILENT /NORESTART
+call %vs2013package% /passive /NORESTART
 :downvs2013end
 ::-------------------python-numpy python-matplotlib opencv-python的安装（pip方式）-------------------
 echo ------------------------------------------------------
@@ -205,14 +170,12 @@ python -m pip install matplotlib
 echo ------------------------------------------------------
 echo              Downloading opencv-python                   
 echo ------------------------------------------------------
-python -m pip install opencv-python
+python -m pip install -v opencv-python==3.4.2.17
 echo ------------------------------------------------------
 echo                  Downloading pillow                   
 echo ------------------------------------------------------
 python -m pip install pillow
-::h264库安装
-::call :h264install
-
+:copydependencies
 ::-------------------放置所有依赖库中的dll去c:\python27\lib\site-packages-------------------
 echo ------------------------------------------------------
 echo                 Copying dependencies                  
@@ -220,9 +183,9 @@ echo ------------------------------------------------------
 echo %extract%\%ffmpegPackage:~0,-4%\bin\ 
 echo %libboostPackageCopy%
 echo %libh264%
-xcopy /Y /E /I %extract%\%ffmpegPackage:~0,-4%\bin %pythonLib%
+xcopy /Y /E /I %extract%\%ffmpegPackage:~0,-4%\bin\*.dll %pythonLib%
 xcopy /Y /E /I %libboostPackageCopy% %pythonLib%
-xcopy /Y /E /I %libh264% %pythonLib%
+xcopy /Y /E /I %libh264%\*.pyd %pythonLib%
 endlocal
 echo ------------------------------------------------------
 echo                  Installation done.                
@@ -315,10 +278,10 @@ if %versionFlag%==win64 (
 
 	set libboostDown="https://nchc.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-12.0-64.exe"
 	set libboostPackage="boost_1_68_0-msvc-12.0-64.exe"
-	set libboostPackageCopy="c:\local\boost_1_68_0\lib64-msvc-12.0"
+	set libboostPackageCopy="c:\local\boost_1_68_0\lib64-msvc-12.0\boost_python27-vc120-mt-x64-1_68.dll"
 	set libboostMD5="4e6b11a971502639ba5cc564c7f2d568"
 	
-	set libh264=h264decoder\libs\x64
+	set libh264=..\..\h264decoder\windows\x64
 	
 	set vs2013depend="https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe"
 	set vs2013package=vcredist_x64.exe
@@ -339,20 +302,15 @@ if %versionFlag%==win64 (
 	
 	set libboostDown="https://excellmedia.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-12.0-32.exe"
 	set libboostPackage="boost_1_68_0-msvc-12.0-32.exe"
-	set libboostPackageCopy="c:\local\boost_1_68_0\lib32-msvc-12.0"
+	set libboostPackageCopy="c:\local\boost_1_68_0\lib32-msvc-12.0\boost_python27-vc120-mt-x32-1_68.dll"
 	set libboostMD5="d5d5ee205c87078245eb7df72789f407"
 	
-	set libh264=h264decoder\libs\x86
+	set libh264=..\..\h264decoder\windows\x86
 	
 	set vs2013depend="https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe"
 	set vs2013package=vcredist_x86.exe
 	set vs2013MD5="0fc525b6b7b96a87523daa7a0013c69d"
 )
-::	set CygwinDown="https://cygwin.com/setup-x86_64.exe"
-::	set CygwinPackage=setup-x86_64.exe
-::	set CygwinSource=http://mirrors.163.com/cygwin/x86_64/
-::	set CygwinPackagegpp="mingw64-x86_64-gcc-g++-5.4.0-3"
-
 
 goto :eof
 

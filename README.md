@@ -18,7 +18,7 @@ This toolkit contains three sample programs based on tello sdk and python2.7,inc
 
 - **Tello_Video(With_Pose_Recognition)**
 
- Tello_Video(With_Pose_Recognition) is an application version modified from Tello_Video.It uses the decoded video data，and everytime extract a single frame image for pose recognition operation , and binds the specific posture and aircraft control commands to realize the pose control of Tello.This code is mainly used as an application case for utilizing the decoded video data of tello for image processing.
+ Tello_Video_With_Pose_Recognition is an application version modified from Tello_Video.It uses the decoded video data，and everytime extract a single frame image for pose recognition operation , and binds the specific posture and aircraft control commands to realize the pose control of Tello.This code is mainly used as an application case for utilizing the decoded video data of tello for image processing.
 
 - **Tello_state.py**
 

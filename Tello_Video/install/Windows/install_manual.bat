@@ -14,72 +14,72 @@ set /a retryCount=0
 echo ------------------------------------------------------
 
 ::-------------------down python2.7 and install-------------------
-echo ------------------------------------------------------
-echo                Downloading python2.7                  
-echo ------------------------------------------------------
+::echo ------------------------------------------------------
+::echo                Downloading python2.7                  
+::echo ------------------------------------------------------
 ::此条注册表项用于开启ssl、tls多个版本的支持，用于解决python官网拒绝访问的问题
-REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v SecureProtocols /t REG_DWORD /d 2728 /f >nul
-set /a retryCount=0
-for %%# in (certutil.exe) do (
-	if not exist "%%~f$PATH:#" (
-		goto downpython
-	)
-)
-if exist %pythonPackage% goto :downpythoncheck
-:downpython
-call :down %pythonDown% %pythonPackage%
-:downpythoncheck
-call :checkMD5 %pythonPackage% %pythonMD5% MD5pass
-if "%MD5pass%" == "NO" (
-	set /a retryCount=!retryCount!+1 &&	if !retryCount! == %maxRetry% (
-		echo Retried %maxRetry% times, all failed. Skip.
-		goto downpythonend
-	) else (
-		echo Download %pythonPackage% failed. Retrying... !retryCount! of %maxRetry%
-		goto downpython
-	)
-)
-call :installmsiPackage %pythonPackage%
+::REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v SecureProtocols /t REG_DWORD /d 2728 /f
+::set /a retryCount=0
+::for %%# in (certutil.exe) do (
+::	if not exist "%%~f$PATH:#" (
+::		goto downpython
+::	)
+::)
+::if exist %pythonPackage% goto :downpythoncheck
+:::downpython
+::call :down %pythonDown% %pythonPackage%
+:::downpythoncheck
+::call :checkMD5 %pythonPackage% %pythonMD5% MD5pass
+::if "%MD5pass%" == "NO" (
+::	set /a retryCount=!retryCount!+1 &&	if !retryCount! == %maxRetry% (
+::		echo Retried %maxRetry% times, all failed. Skip.
+::		goto downpythonend
+::	) else (
+::		echo Download %pythonPackage% failed. Retrying... !retryCount! of %maxRetry%
+::		goto downpython
+::	)
+::)
+::call :installmsiPackage %pythonPackage%
 ::添加python2.7环境变量
 ::由于wmic不会即时生效，所以进行set
-echo %PATH%|findstr "c:\python27" >nul
-if %errorlevel% neq 0 (
-	wmic ENVIRONMENT where "name='PATH' and username='<system>'" set VariableValue="%PATH%;c:\python27"
-	set "path=%path%;c:\python27;"
-)
-echo %PATHEXT%|findstr ".PY;.PYM" >nul
-if %errorlevel% neq 0 (
-	wmic ENVIRONMENT where "name='PATHEXT' and username='<system>'" set VariableValue="%PATHEXT%;.PY;.PYM"
-	set "pathext=%pathext%;.PY;.PYM;"
-)
-:downpythonend
+::echo %PATH%|findstr "c:\python27" >nul
+::if %errorlevel% neq 0 (
+::	wmic ENVIRONMENT where "name='PATH' and username='<system>'" set VariableValue="%PATH%;c:\python27"
+::	set "path=%path%;c:\python27;"
+::)
+::echo %PATHEXT%|findstr ".PY;.PYM" >nul
+::if %errorlevel% neq 0 (
+::	wmic ENVIRONMENT where "name='PATHEXT' and username='<system>'" set VariableValue="%PATHEXT%;.PY;.PYM"
+::	set "pathext=%pathext%;.PY;.PYM;"
+::)
+:::downpythonend
 ::-------------------python pip的安装-------------------
-echo ------------------------------------------------------
-echo                   Downloading pip                    
-echo ------------------------------------------------------
-set /a retryCount=0
-for %%# in (certutil.exe) do (
-	if not exist "%%~f$PATH:#" (
-		goto downpip
-	)
-)
-if exist %pipPackage% goto :downpipcheck
-:downpip
-call :down %pipDown% %pipPackage%
-:downpipcheck
-call :checkMD5 %pipPackage% %pipMD5% MD5pass
-if "%MD5pass%" == "NO" (
-	set /a retryCount=!retryCount!+1 &&	if !retryCount! == %maxRetry% (
-		echo Retried %maxRetry% times, all failed. Skip.
-		goto downpipend
-	) else (
-		echo Download %pipPackage% failed. Retrying... !retryCount! of %maxRetry%
-		goto downpip
-	)
-)
-python %pipPackage%
-python -m pip install -U pip
-:downpipend
+::echo ------------------------------------------------------
+::echo                   Downloading pip                    
+::echo ------------------------------------------------------
+::set /a retryCount=0
+::for %%# in (certutil.exe) do (
+::	if not exist "%%~f$PATH:#" (
+::		goto downpip
+::	)
+::)
+::if exist %pipPackage% goto :downpipcheck
+:::downpip
+::call :down %pipDown% %pipPackage%
+:::downpipcheck
+::call :checkMD5 %pipPackage% %pipMD5% MD5pass
+::if "%MD5pass%" == "NO" (
+::	set /a retryCount=!retryCount!+1 &&	if !retryCount! == %maxRetry% (
+::		echo Retried %maxRetry% times, all failed. Skip.
+::		goto downpipend
+::	) else (
+::		echo Download %pipPackage% failed. Retrying... !retryCount! of %maxRetry%
+::		goto downpip
+::	)
+::)
+::python %pipPackage%
+::python -m pip install -U pip
+:::downpipend
 ::-------------------libboost-all-dev 的安装-------------------
 echo ------------------------------------------------------
 echo                Downloading libboost                   
@@ -156,36 +156,38 @@ if "%MD5pass%" == "NO" (
 		goto downvs2013
 	)
 )
-call %vs2013package% /passive /NORESTART
+call %vs2013package% /SILENT /NORESTART
 :downvs2013end
 ::-------------------python-numpy python-matplotlib opencv-python的安装（pip方式）-------------------
-echo ------------------------------------------------------
-echo                  Downloading numpy                    
-echo ------------------------------------------------------
-python -m pip install numpy
-echo ------------------------------------------------------
-echo                Downloading matplotlib                 
-echo ------------------------------------------------------
-python -m pip install matplotlib
-echo ------------------------------------------------------
-echo              Downloading opencv-python                   
-echo ------------------------------------------------------
-python -m pip install -v opencv-python==3.4.2.17
-echo ------------------------------------------------------
-echo                  Downloading pillow                   
-echo ------------------------------------------------------
-python -m pip install pillow
-:copydependencies
+::echo ------------------------------------------------------
+::echo                  Downloading numpy                    
+::echo ------------------------------------------------------
+::python -m pip install numpy
+::echo ------------------------------------------------------
+::echo                Downloading matplotlib                 
+::echo ------------------------------------------------------
+::python -m pip install matplotlib
+::echo ------------------------------------------------------
+::echo              Downloading opencv-python                   
+::echo ------------------------------------------------------
+::python -m pip install opencv-python
+::echo ------------------------------------------------------
+::echo                  Downloading pillow                   
+::echo ------------------------------------------------------
+::python -m pip install pillow
+::h264库安装
+::call :h264install
+
 ::-------------------放置所有依赖库中的dll去c:\python27\lib\site-packages-------------------
-echo ------------------------------------------------------
-echo                 Copying dependencies                  
-echo ------------------------------------------------------
-echo %extract%\%ffmpegPackage:~0,-4%\bin\ 
-echo %libboostPackageCopy%
-echo %libh264%
-xcopy /Y /E /I %extract%\%ffmpegPackage:~0,-4%\bin\*.dll %pythonLib%
-xcopy /Y /E /I %libboostPackageCopy% %pythonLib%
-xcopy /Y /E /I %libh264%\*.pyd %pythonLib%
+::echo ------------------------------------------------------
+::echo                 Copying dependencies                  
+::echo ------------------------------------------------------
+::echo %extract%\%ffmpegPackage:~0,-4%\bin\ 
+::echo %libboostPackageCopy%
+::echo %libh264%
+::xcopy /Y /E /I %extract%\%ffmpegPackage:~0,-4%\bin %pythonLib%
+::xcopy /Y /E /I %libboostPackageCopy% %pythonLib%
+::xcopy /Y /E /I %libh264% %pythonLib%
 endlocal
 echo ------------------------------------------------------
 echo                  Installation done.                
@@ -278,10 +280,10 @@ if %versionFlag%==win64 (
 
 	set libboostDown="https://nchc.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-12.0-64.exe"
 	set libboostPackage="boost_1_68_0-msvc-12.0-64.exe"
-	set libboostPackageCopy="c:\local\boost_1_68_0\lib64-msvc-12.0\boost_python27-vc120-mt-x64-1_68.dll"
+	set libboostPackageCopy="c:\local\boost_1_68_0\lib64-msvc-12.0"
 	set libboostMD5="4e6b11a971502639ba5cc564c7f2d568"
 	
-	set libh264=..\..\h264decoder\windows\x64
+	set libh264=h264decoder\libs\x64
 	
 	set vs2013depend="https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe"
 	set vs2013package=vcredist_x64.exe
@@ -302,15 +304,16 @@ if %versionFlag%==win64 (
 	
 	set libboostDown="https://excellmedia.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-12.0-32.exe"
 	set libboostPackage="boost_1_68_0-msvc-12.0-32.exe"
-	set libboostPackageCopy="c:\local\boost_1_68_0\lib32-msvc-12.0\boost_python27-vc120-mt-x32-1_68.dll"
+	set libboostPackageCopy="c:\local\boost_1_68_0\lib32-msvc-12.0"
 	set libboostMD5="d5d5ee205c87078245eb7df72789f407"
 	
-	set libh264=..\..\h264decoder\windows\x86
+	set libh264=h264decoder\libs\x86
 	
 	set vs2013depend="https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe"
 	set vs2013package=vcredist_x86.exe
 	set vs2013MD5="0fc525b6b7b96a87523daa7a0013c69d"
 )
+
 
 goto :eof
 

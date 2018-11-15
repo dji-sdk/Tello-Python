@@ -8,16 +8,16 @@ set "pythondir=c:\python27"
 set "libboostdir=c:\local\boost_1_68_0"
 set "logfile=%~dp0\UnInstallLog.txt"
 set extract=extract
-echo ------------------------------------------------------
-echo                 Uninstalling python27
-echo ------------------------------------------------------
-call :uninstallmsiPackage "%python27Name%" "%python27Name%"
-if exist %pythondir%  rmdir /s /q %pythondir%
-if exist %pythondir%  rd /s /q %pythondir%
-set delPythonPath=%PATH:;c:\python27=%
-set delPythonExt=%PATHEXT:;.PY;.PYM=%
-wmic ENVIRONMENT where "name='PATH' and username='<system>'" set VariableValue="%delPythonPath%"
-wmic ENVIRONMENT where "name='PATHEXT' and username='<system>'" set VariableValue="%delPythonExt%"
+::echo ------------------------------------------------------
+::echo                 Uninstalling python27
+::echo ------------------------------------------------------
+::call :uninstallmsiPackage "%python27Name%" "%python27Name%"
+::if exist %pythondir%  rmdir /s /q %pythondir%
+::if exist %pythondir%  rd /s /q %pythondir%
+::set delPythonPath=%PATH:;c:\python27=%
+::set delPythonExt=%PATHEXT:;.PY;.PYM=%
+::wmic ENVIRONMENT where "name='PATH' and username='<system>'" set VariableValue="%delPythonPath%"
+::wmic ENVIRONMENT where "name='PATHEXT' and username='<system>'" set VariableValue="%delPythonExt%"
 echo ------------------------------------------------------
 echo                 Uninstalling libboost
 echo ------------------------------------------------------
@@ -29,8 +29,8 @@ if exist %extract% rd /s /q %extract%
 echo ------------------------------------------------------
 echo              Cleaning downloaded files
 echo ------------------------------------------------------
-del /f /q %pythonPackage%
-del /f /q %pipPackage%
+::del /f /q %pythonPackage%
+::del /f /q %pipPackage%
 del /f /q %ffmpegPackage%
 del /f /q %libboostPackage%
 echo ------------------------------------------------------

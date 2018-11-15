@@ -1,12 +1,5 @@
 @echo off
 ::runas administrator
-
-::TODO 注册表可以拿到安装的完整路径
-::TODO 用户已安装过python等包 如何判断和处理
-::08.30 注册表查询变更为严格匹配（解决卸载32位却先找到64位问题）
-::08.30 替换python默认的/I参数为/passive /x 直接卸载
-::08.30 解决变量延迟问题
-
 %1 start "" mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
 setlocal enabledelayedexpansion
 call :setdir
