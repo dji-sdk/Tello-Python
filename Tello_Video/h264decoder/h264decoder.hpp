@@ -19,6 +19,7 @@ mechanisms of boost::python.
 // for ssize_t (signed int type as large as pointer type)
 #include <cstdlib>
 #include <stdexcept>
+#include <utility>
 
 struct AVCodecContext;
 struct AVFrame;
