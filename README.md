@@ -34,3 +34,7 @@ Specific to the content and description of each package, you can refer to the re
 ## Contact Information
 
 If you have any questions about this sample code and the installation, please feel free to contact me. You can communicate with me by sending e-mail to sdk@ryzerobotics.com.
+
+## About Multi-Tello-Formation
+
+Please refer to github repository https://github.com/TelloSDK/Multi-Tello-Formation.
