@@ -1,0 +1,104 @@
+FAQ about Tello-Python 
+
+Q1:On windows, what dependencies are needed to run tello_video/how to install it manually?
+
+A1:On windows, to run tello_video, first, you need to download python2.7,
+   a.Python2.7 download link:
+   win64: https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi
+   win32: https://www.python.org/ftp/python/2.7.15/python-2.7.15.msi
+   
+   b.Then you can install these four dependencies through pip, ('way to install pip' please google by yourself)
+   numpy,opencv-python,pillow,matplotib。The installation instructions are:
+   numpy:           python -m pip install numpy
+   matplotlib:      python -m pip install matplotlib
+   opencv-python:   python -m pip install -v opencv-python==3.4.2.17
+   pillow:          python -m pip install pillow
+   
+   c.Next, you need to download and install boost in order to get a dynamic link library called boost_python27-vc120-mt-x**-1_68.dll
+   boost download link:
+   win64: https://nchc.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-12.0-64.exe 
+   win32: https://excellmedia.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-12.0-32.exe  
+   After the download is complete, double-click the installation package to install. After the installation is complete, find the 
+   boost_python27-vc120-mt-x**-1_68.dll file (the '**' depends on the number of your windows system) and place it in 
+   .\Python27\Lib\site-packages path.
+   
+   d.Next, you need to download ffmpeg, the purpose is to get multiple dll files including avcodec-58.dll,etc.
+   ffmpeg download link:
+   win64: https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-20180825-844ff49-win64-shared.zip
+   win32: https://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-20180825-844ff49-win32-shared.zip
+   After the download is complete, extract the files,enter ./bin directory and place all the .dll files under the .\Python27\Lib\site-packages path.
+   
+   e.Next, you need to download the vs2013 compiler.
+   vs2013 compiler download link：
+   win64: https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe
+   win32: https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe
+   After the download is complete, run the installation package and install.
+   
+   f.Finally Copy the libh264decoder from the Tello-Python package to the .\Python27\Lib\site-packages directory.
+   h264decoder.pyd path:
+   win64: .\Tello-Python\Tello_Video\h264decoder\Windows\x64\libh264decoder.pyd
+   win32: .\Tello-Python\Tello_Video\h264decoder\Windows\x86\libh264decoder.pyd
+   
+   In the latest commit, a zip named 'tello_video_dll.zip' is provided (for win64 only), which includes the required files related 
+   to boost, ffmpeg, libh264decoder, vs2013 compiler.If you want to install it:
+   First, double-click to run vcredist_x64.exe (vs2013 compiler installation package) to install.Second, copy the remaining files in the folder 
+   to the C:\Python27\Lib\site-packages path.
+   (With this zip, you can avoid the online download and partial installation, but note that the files in this zip are only available for win64!
+   Also, like numpy, matplotlib, pillow and opencv-python you still need to install with pip by yourself.）
+ 
+ 
+Q2:The one-click installation script (install.bat) on windows does not work properly on my computer.
+
+A2:At present, the install.bat that we provide contains steps such as MD5 checksum, which is not very compatible with some users' computers. A stable installation version will be provided later.
+   If the one-click installation script does not work properly, please refer to the manual installation of dependencies in Q1&A1.
+
+   
+Q3:What does install_manual.bat do? What is the difference with install.bat?
+
+A3:This script is no different from install.bat in the completed tasks. The main difference is that it will be interrupted before each installation project, 
+   and prompt the user to install.
+   Currently the script is not stable. It is recommended that you apply install.bat or use the manual installation method in Q1&A1.
+
+   
+Q4:In windows/linux/mac, all my dependencies have been installed, and no error has occurred after running python main.py.However, after running 
+   the program, the GUI does not pop up the video stream, and I cannot use the Snapshot button to take a photo.
+   
+A4:Under normal circumstances, when tello wifi is connected, the GUI will pop up the playback window of the video stream after running the program, and the snapshot button can 
+   be used to take pictures.If it is not working properly (see https://www.youtube.com/watch?v=kcXN7CYgQ0g for actual results),
+   Please consider and check the following situations:  
+   a.Whether your PC device is properly connected to your tello wifi;
+   b.Check your PC's network firewall, which may block video stream data;
+   c.Further check your network settings, because tello is pushing the video stream data to the 11111 port of your PC, so please check if the 11111 UDP port is disabled in
+     your PC network settings, or the UDP data of port 11111 is blocked. If there is, please cancel it;
+   d.In rare cases, it is possible that the 'streamon' command sent by the PC has been lost and not received by the tello. In this case, try to run the program again.
+
+   
+Q5:After running the program, the keyboard control function in the command panel cannot be used normally.
+
+A5:Please make sure that the mouse does not click outside the command panel. If you click it, please click the command panel again with the mouse and 
+   retry the keyboard control function.
+
+
+Q6:Will you provide a python version sample code of the multi-tello swarm  for tello EDU version?
+
+A6:Please refer to https://github.com/TelloSDK/Multi-Tello-Formation and read its README.md documentation.In addition, the program provides a direct executable file version (.exe).
+   Please refer to the userguide in Tello-Swarm.zip for use.
+
+Q7:What is the role of libh264decoder?
+
+A7:Libh264decoder is a dynamic link library (dll)compiled from h264decoder.cpp, h264decoder.hpp and h264decoder_python.cpp in the .\Tello-Python\Tello_Video\h264decoder folder.
+   ,its function is to decode the video stream of the h264 encoded format transmitted by the tello to the PC device.On windows, it exists in the form of libh264decoder.pyd,
+   and in linux and macos,it exists in the form of libh264decoder.so.The libh264decoder dynamic link library on Windows,Linux and Mac is available in the 
+   .\Tello-Python\Tello_Video\h264decoder path. In the one-click script installation process for Linux and Mac, libh264decoder.so is compiled and generated in real time through 
+   source code.During the one-click script installation process for Windows, libh264decoder.pyd is copied directly from \Tello_Video\h264decoder\Windows and placed in 
+   .\Python27\Lib\site-packages.
+   
+Q8:Can Tello EDU transmit video streams externally in station mode (send ap 'ssid' 'password' command for Tello EDU)?
+
+A8:This feature is currently not supported.
+
+Q9:What are the bands and channels of wifi UDP communication supported by the tello SDK interface?
+
+A9:Currently only supports 2.4GHz, and the supported channels include 0-11.
+
+If you have other questions, please ask questions or add!

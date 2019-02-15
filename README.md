@@ -29,14 +29,16 @@ This toolkit contains three sample programs based on tello sdk and python2.7,inc
 The sample codes above are based on python2.7.There is no need to install additional third-party libraries for running Single_Tello_Test and tello_state.py.For Tello_Video and Tello_Video (With_Pose_Recognition), you need to install a series of third-party libraries. Therefore, in these two folders, a one-click installation script (based on windows32/64, linux and macos) is provided, which can facilitate you with installing all relevant dependencies.
 
 Specific to the content and description of each package, you can refer to the readme file in the related folder. 
-
+ 
 ## Contact Information
 
 If you have any questions about this sample code and the installation, please feel free to contact me. You can communicate with me by sending e-mail to sdk@ryzerobotics.com.
+And recently we have committed a new FAQ file under the 'Tello-Python'.If you have any questions,you can firstly refer to it .
 
 ## About Multi-Tello-Formation
 
 Please refer to github repository https://github.com/TelloSDK/Multi-Tello-Formation.
 This is a python program that enable the function of multi-tello swarms. 
+
 
 
