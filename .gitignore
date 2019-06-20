@@ -3,3 +3,4 @@
 *.dat
 *.caffemodel
 log/
+build/
