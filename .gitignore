@@ -2,3 +2,5 @@
 *.DS_Store
 *.dat
 *.caffemodel
+log/
+build/
