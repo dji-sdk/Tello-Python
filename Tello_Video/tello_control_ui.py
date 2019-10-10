@@ -312,35 +312,35 @@ class TelloUI:
 
     def on_keypress_w(self, event):
         print "up %d m" % self.distance
-        self.telloUp(self.distance)
+        self.telloUp(self.distance_bar.get())
 
     def on_keypress_s(self, event):
         print "down %d m" % self.distance
-        self.telloDown(self.distance)
+        self.telloDown(self.distance_bar.get())
 
     def on_keypress_a(self, event):
         print "ccw %d degree" % self.degree
-        self.tello.rotate_ccw(self.degree)
+        self.tello.rotate_ccw(self.degree_bar.get())
 
     def on_keypress_d(self, event):
         print "cw %d m" % self.degree
-        self.tello.rotate_cw(self.degree)
+        self.tello.rotate_cw(self.degree_bar.get())
 
     def on_keypress_up(self, event):
         print "forward %d m" % self.distance
-        self.telloMoveForward(self.distance)
+        self.telloMoveForward(self.distance_bar.get())
 
     def on_keypress_down(self, event):
         print "backward %d m" % self.distance
-        self.telloMoveBackward(self.distance)
+        self.telloMoveBackward(self.distance_bar.get())
 
     def on_keypress_left(self, event):
         print "left %d m" % self.distance
-        self.telloMoveLeft(self.distance)
+        self.telloMoveLeft(self.distance_bar.get())
 
     def on_keypress_right(self, event):
         print "right %d m" % self.distance
-        self.telloMoveRight(self.distance)
+        self.telloMoveRight(self.distance_bar.get())
 
     def on_keypress_enter(self, event):
         if self.frame is not None:
