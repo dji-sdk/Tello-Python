@@ -18,6 +18,7 @@ endif(APPLE)
 
 find_package(PythonInterp 2.7 REQUIRED)
 find_package(PythonLibs 2.7 REQUIRED )
+find_package(Boost COMPONENTS python27 REQUIRED)
 
 
 include_directories(${PYTHON_INCLUDE_DIRS})
