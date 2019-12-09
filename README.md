@@ -1,3 +1,7 @@
+# 参考記事
+[DJI公式SDK「Tello-Python」使い方](https://qiita.com/hsgucci/items/3327cc29ddf10a321f3c)
+[ドローンを活用した避難勧告システム 技術検証](https://qiita.com/sk_nimo/items/56ede90072105e14497d)
+
 # Tello-Python
 
 ## Introduction
