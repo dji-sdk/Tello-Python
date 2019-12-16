@@ -7,13 +7,13 @@ import cv2			# OpenCVを使うため
 # メイン関数
 def main():
 	# Telloクラスを使って，droneというインスタンス(実体)を作る
-	drone = tello.Tello('', 8889, command_timeout=.01)  
+	drone = tello.Tello('', 8889, command_timeout=.01)
 
 	current_time = time.time()	# 現在時刻の保存変数
 	pre_time = current_time		# 5秒ごとの'command'送信のための時刻変数
 
 	time.sleep(0.5)		# 通信が安定するまでちょっと待つ
-	
+
 	#Ctrl+cが押されるまでループ
 	try:
 		while True:
@@ -21,7 +21,7 @@ def main():
 			# (A)画像取得
 			frame = drone.read()	# 映像を1フレーム取得
 			if frame is None or frame.size == 0:	# 中身がおかしかったら無視
-				continue 
+				continue
 
 			# (B)ここから画像処理
 			image = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)		# OpenCV用のカラー並びに変換する
@@ -72,3 +72,4 @@ def main():
 # "python main.py"として実行された時だけ動く様にするおまじない処理
 if __name__ == "__main__":		# importされると"__main__"は入らないので，実行かimportかを判断できる．
 	main()    # メイン関数を実行
+#動くかどうかの検証でぇええええええええす！！！！
