@@ -4,6 +4,17 @@ import tello		# tello.pyをインポート
 import time			# time.sleepを使いたいので
 import cv2			# OpenCVを使うため
 
+# こんな感じでimportするようにしよう
+# from ProcessImage import *
+from ProcessVoice import main_from_alexa
+# from RecHuman import *
+
+# ドローンのstatus定義
+# 'default': ホバリングする(初期状態)
+# 'approach': 人を検知し，近づく
+# 'communicate': 対話状態
+# 'judingpose': 姿勢検知
+
 # メイン関数
 def main():
 	# Telloクラスを使って，droneというインスタンス(実体)を作る
@@ -13,6 +24,9 @@ def main():
 	pre_time = current_time		# 5秒ごとの'command'送信のための時刻変数
 
 	time.sleep(0.5)		# 通信が安定するまでちょっと待つ
+
+	status = 'default'
+	drone.takeoff() # 自動で離陸しているが，ここはAlexaを使用して離陸させた方が良いかも(対話を開始するタイミングをトリガーさせるためにも)
 	
 	#Ctrl+cが押されるまでループ
 	try:
@@ -27,6 +41,22 @@ def main():
 			image = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)		# OpenCV用のカラー並びに変換する
 			small_image = cv2.resize(image, dsize=(480,360) )	# 画像サイズを半分に変更
 
+
+			# 関数として使えるように各チームで処理を作ること
+			if status == 'default':
+				# デフォルト状態でホバリングし，常に人を認識する．認識した時，statusを'approach'に変更する
+
+			if status == 'approach':
+				# 認識した人に近づく．近づき終わったらstatusを'communicate'に変更する
+
+			if status == 'communicate':
+				# 人と対話する．対話が正常終了したらstatusを'default'に戻す．対話に失敗した場合はstatusを'judingpose'に
+
+			if status == 'judingpose':
+				# 人の姿勢を検出する．姿勢推定を行い人の状態の判定後，人に話しかけ，statusを'default'に戻す
+
+
+			# 以下(X)(Y)(Z)は便宜的に記載した．システムで必要な処理ではない
 
 			# (X)ウィンドウに表示
 			cv2.imshow('OpenCV Window', small_image)	# ウィンドウに表示するイメージを変えれば色々表示できる
