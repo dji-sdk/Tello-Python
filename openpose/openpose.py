@@ -1,1 +1,2 @@
-//testiwasaki
+#testiwasaki
+print("1")
