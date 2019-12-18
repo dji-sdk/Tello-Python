@@ -7,6 +7,7 @@
 import logging
 import ask_sdk_core.utils as ask_utils
 
+from ask_sdk_core.utils import is_intent_name, get_dialog_state, get_slot_value
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.dispatch_components import AbstractExceptionHandler
@@ -65,12 +66,13 @@ class ReplyIntentHandler(AbstractRequestHandler):
         slots = handler_input.request_envelope.request.intent.slots
         
         speak_output = "わかりました"
-        status = slots["status"].resolutions.resolutions_per_authority[0].values[0].value.name
         
-        if status == "YES":
-            speak_output = "避難してください"
-        elif status == "NO":
-            speak_output = "救助を呼びます"
+        if get_slot_value(handler_input=handler_input, slot_name="status"):
+            status = slots["status"].resolutions.resolutions_per_authority[0].values[0].value.id
+            if status == "YES":
+                speak_output = "避難してください"
+            elif status == "NO":
+                speak_output = "救助を呼びます"
         else:
             speak_output = "ちゃんと返事して"
 
