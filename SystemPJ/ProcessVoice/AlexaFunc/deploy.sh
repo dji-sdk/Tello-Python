@@ -1,2 +1,7 @@
-docker run --rm -v "$PWD":/var/task aws-lambda-python3.7-test:latest
-aws lambda update-function-code --function-name alexa-to-tellopython --zip-file fileb://deploy_package.zip
+echo "DEPLOY START!!"
+
+# Input your function name
+funcname="alexaFunctionForTello"
+
+docker run --rm -v "$PWD":/var/task shoda888/local2pylambda:latest
+aws lambda update-function-code --function-name ${funcname} --zip-file fileb://deploy_package.zip --profile syspro
