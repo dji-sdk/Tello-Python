@@ -502,3 +502,19 @@ class Tello:
         myMQTTClient.connect()
         myMQTTClient.subscribe("test/pub", 1, customCallback) # AWS IoTCore test/pub チャネルをサブスクライブ
         time.sleep(3)
+
+    def to_default(self):
+        # statusをdefaultに変更するメソッド
+        self.status = 'default'
+    
+    def to_approach(self):
+        # statusをapproachに変更するメソッド
+        self.status = 'approach'
+    
+    def to_communicate(self):
+        # statusをcommunicateに変更するメソッド
+        self.status = 'communicate'
+    
+    def to_judgingpose(selt):
+        # statusをjudgingposeに変更するメソッド
+        self.status = 'judgingpose'
