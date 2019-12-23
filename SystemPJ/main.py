@@ -46,36 +46,42 @@ def main():
 
 			# 関数として使えるように各チームで処理を作ること
 			if drone.status == 'default':
-				time.sleep(2)
-				print(drone.status)
-				drone.to_approach()
 				# デフォルト状態でホバリングし，常に人を認識する．認識した時，statusを'approach'に変更する
-
+				
+				# デバッグ用
+				# time.sleep(2)
+				# print(drone.status)
+				# drone.to_approach()
 
 			if drone.status == 'approach':
 				# 認識した人に近づく．近づき終わったらstatusを'communicate'に変更する
-				time.sleep(2)
-				print(drone.status)
-				drone.to_communicate()
+
+				# デバッグ用
+				# time.sleep(2)
+				# print(drone.status)
+				# drone.to_communicate()
 
 			if drone.status == 'communicate':
+				# 人と対話する．対話が正常終了したらstatusを'default'に戻す．対話に失敗した場合はstatusを'judingpose'に
 				speak.mp3play('SystemPJ/ProcessVoice/speech_20191223054237114.mp3')
-				# drone.subscribe() # 対話開始
+				drone.subscribe() # 対話開始
 
+				# デバッグ用
 				# drone.to_default()
 				# drone.to_judingpose()
 				
 				time.sleep(20)
-				# 人と対話する．対話が正常終了したらstatusを'default'に戻す．対話に失敗した場合はstatusを'judingpose'に
 				if drone.status == 'communicate': # 無言
 					drone.status = 'judingpose' # 人の姿勢を検出する
 				
 
 			if drone.status == 'judingpose':
-				time.sleep(2)
-				print(drone.status)
-				drone.to_default()
 				# 人の姿勢を検出する．姿勢推定を行い人の状態の判定後，人に話しかけ，statusを'default'に戻す
+
+				# デバッグ用
+				# time.sleep(2)
+				# print(drone.status)
+				# drone.to_default()
 
 
 			# 以下(X)(Y)(Z)は便宜的に記載した．システムで必要な処理ではない
