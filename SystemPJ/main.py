@@ -6,7 +6,7 @@ import cv2			# OpenCVを使うため
 
 # こんな感じでimportするようにしよう
 # from ProcessImage import *
-from ProcessVoice import main_from_alexa
+from ProcessVoice import main_from_alexa, speak, communicate
 # from RecHuman import *
 
 # ドローンのstatus定義
@@ -18,7 +18,9 @@ from ProcessVoice import main_from_alexa
 # メイン関数
 def main():
 	# Telloクラスを使って，droneというインスタンス(実体)を作る
-	drone = tello.Tello('', 8889, command_timeout=.01)  
+	drone = Tello('', 8889, command_timeout=.01)  
+
+	drone.send_command('command') # SDKモードを開始
 
 	current_time = time.time()	# 現在時刻の保存変数
 	pre_time = current_time		# 5秒ごとの'command'送信のための時刻変数
@@ -43,16 +45,36 @@ def main():
 
 
 			# 関数として使えるように各チームで処理を作ること
-			if status == 'default':
+			if drone.status == 'default':
+				time.sleep(2)
+				print(drone.status)
+				drone.to_approach()
 				# デフォルト状態でホバリングし，常に人を認識する．認識した時，statusを'approach'に変更する
 
-			if status == 'approach':
+
+			if drone.status == 'approach':
 				# 認識した人に近づく．近づき終わったらstatusを'communicate'に変更する
+				time.sleep(2)
+				print(drone.status)
+				drone.to_communicate()
 
-			if status == 'communicate':
+			if drone.status == 'communicate':
+				speak.mp3play('SystemPJ/ProcessVoice/speech_20191223054237114.mp3')
+				# drone.subscribe() # 対話開始
+
+				# drone.to_default()
+				# drone.to_judingpose()
+				
+				time.sleep(20)
 				# 人と対話する．対話が正常終了したらstatusを'default'に戻す．対話に失敗した場合はstatusを'judingpose'に
+				if drone.status == 'communicate': # 無言
+					drone.status = 'judingpose' # 人の姿勢を検出する
+				
 
-			if status == 'judingpose':
+			if drone.status == 'judingpose':
+				time.sleep(2)
+				print(drone.status)
+				drone.to_default()
 				# 人の姿勢を検出する．姿勢推定を行い人の状態の判定後，人に話しかけ，statusを'default'に戻す
 
 

@@ -5,6 +5,8 @@ import threading        # マルチスレッド用
 import time             # ウェイト時間用
 import numpy as np      # 画像データの配列用
 import libh264decoder   # H.264のデコード用(自分でビルドしたlibh264decoder.so)
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+import ast
 
 class Tello:
     """Telloドローンと通信するラッパークラス"""
@@ -21,6 +23,8 @@ class Tello:
         :param tello_ip (str): TelloのIPアドレス．EDUでなければ192.168.10.1
         :param tello_port (int): Telloのポート.普通は8889
         """
+
+        self.status = 'default'
 
         self.abort_flag = False     # 中断フラグ
         self.decoder = libh264decoder.H264Decoder() # H.264のデコード関数を登録
@@ -473,3 +477,28 @@ class Tello:
         """
 
         return self.move('up', distance)
+
+    def customCallback(self, client, userdata, message):
+        payload = message.payload
+        print('Received a new message: ')
+        print(payload)
+        print('from topic: ')
+        print(message.topic)
+        print('--------------\n\n')
+        # command = payload[0]
+        dic = ast.literal_eval(payload)
+        if dic['message'] == "solved":
+            self.status = "default"
+    
+    def subscribe(self):
+        # For certificate based connection
+        myMQTTClient = AWSIoTMQTTClient('device001') # 適当な値でOK
+        myMQTTClient.configureEndpoint('a1qhwdmvn9jp9z-ats.iot.ap-northeast-1.amazonaws.com', 8883) # 管理画面で確認
+        myMQTTClient.configureCredentials('rootCA.pem', 'fef0460c44-private.pem.key', 'fef0460c44-certificate.pem.crt') #各種証明書(公開してはならない)
+        myMQTTClient.configureOfflinePublishQueueing(-1) # Infinite offline Publish queueing
+        myMQTTClient.configureDrainingFrequency(2) # Draining: 2 Hz
+        myMQTTClient.configureConnectDisconnectTimeout(10) # 10 sec
+        myMQTTClient.configureMQTTOperationTimeout(5) # 5 sec
+        myMQTTClient.connect()
+        myMQTTClient.subscribe("test/pub", 1, customCallback) # AWS IoTCore test/pub チャネルをサブスクライブ
+        time.sleep(3)
