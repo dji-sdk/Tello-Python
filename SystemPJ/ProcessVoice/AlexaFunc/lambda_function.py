@@ -5,6 +5,8 @@
 # session persistence, api calls, and more.
 # This sample is built using the handler classes approach in skill builder.
 import logging
+import boto3
+import json
 import ask_sdk_core.utils as ask_utils
 
 from ask_sdk_core.utils import is_intent_name, get_dialog_state, get_slot_value
@@ -17,6 +19,28 @@ from ask_sdk_model import Response
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+iot = boto3.client('iot-data')
+
+def publish(msg):
+    # ⑤トピックを指定
+    topic = 'test/pub'
+    # ⑥メッセージの内容
+    payload = {
+        "message": msg
+    }  
+
+    try:
+        # ⑦メッセージをPublish
+        iot.publish(
+            topic=topic,
+            qos=0,
+            payload=json.dumps(payload, ensure_ascii=False)
+        )
+        return True
+    
+    except Exception as e:
+        print(e)
+        return False
 
 
 class LaunchRequestHandler(AbstractRequestHandler):
@@ -76,15 +100,21 @@ class ReplyIntentHandler(AbstractRequestHandler):
         else:
             speak_output = "ちゃんと返事して"
 
+        if publish("solved"):
+            return (
+                handler_input.response_builder
+                    .speak(speak_output)
+                    # .ask("どうしますか？")
+                    .response
+            )
+        else:
+            return (
+                handler_input.response_builder
+                    .speak("通信エラーがおきました。")
+                    # .ask("add a reprompt if you want to keep the session open for the user to respond")
+                    .response
+            )
             
-
-        return (
-            handler_input.response_builder
-                .speak(speak_output)
-                # .ask("add a reprompt if you want to keep the session open for the user to respond")
-                .response
-        )
-
 
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for Help Intent."""
