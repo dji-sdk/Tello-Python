@@ -487,21 +487,22 @@ class Tello:
         print('--------------\n\n')
         # command = payload[0]
         dic = ast.literal_eval(payload)
+
+        #対話が行えたらドローンを初期状態に戻す
         if dic['message'] == "solved":
-            self.status = "default"
+            self.to_default()
     
     def subscribe(self):
         # For certificate based connection
         myMQTTClient = AWSIoTMQTTClient('device001') # 適当な値でOK
-        myMQTTClient.configureEndpoint('a1qhwdmvn9jp9z-ats.iot.ap-northeast-1.amazonaws.com', 8883) # 管理画面で確認
-        myMQTTClient.configureCredentials('rootCA.pem', 'fef0460c44-private.pem.key', 'fef0460c44-certificate.pem.crt') #各種証明書(公開してはならない)
+        myMQTTClient.configureEndpoint('a2v7apez3ta34e-ats.iot.ap-northeast-1.amazonaws.com', 8883) # 管理画面で確認
+        myMQTTClient.configureCredentials('./ProcessVoice/rootCA.pem', './ProcessVoice/ddeb0c550f-private.pem.key', './ProcessVoice/ddeb0c550f-certificate.pem.crt') #各種証明書(公開してはならない)
         myMQTTClient.configureOfflinePublishQueueing(-1) # Infinite offline Publish queueing
         myMQTTClient.configureDrainingFrequency(2) # Draining: 2 Hz
         myMQTTClient.configureConnectDisconnectTimeout(10) # 10 sec
         myMQTTClient.configureMQTTOperationTimeout(5) # 5 sec
         myMQTTClient.connect()
-        myMQTTClient.subscribe("test/pub", 1, customCallback) # AWS IoTCore test/pub チャネルをサブスクライブ
-        time.sleep(3)
+        myMQTTClient.subscribe("test/pub", 1, self.customCallback) # AWS IoTCore test/pub チャネルをサブスクライブ
 
     def to_default(self):
         # statusをdefaultに変更するメソッド
@@ -515,6 +516,6 @@ class Tello:
         # statusをcommunicateに変更するメソッド
         self.status = 'communicate'
     
-    def to_judgingpose(selt):
+    def to_judgingpose(self):
         # statusをjudgingposeに変更するメソッド
         self.status = 'judgingpose'

@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import tello		# tello.pyをインポート
+from tello import Tello		# tello.pyをインポート
 import time			# time.sleepを使いたいので
 import cv2			# OpenCVを使うため
+import sys
 
 # こんな感じでimportするようにしよう
-# from ProcessImage import *
-from ProcessVoice import main_from_alexa, speak, communicate
-# from RecHuman import *
+sys.path.append('./ProcessVoice')
+sys.path.append('./ProcessImage')
+sys.path.append('./Rechuman')
+# import *
+import speak
 
 # ドローンのstatus定義
 # 'default': ホバリングする(初期状態)
@@ -27,7 +30,6 @@ def main():
 
 	time.sleep(0.5)		# 通信が安定するまでちょっと待つ
 
-	status = 'default'
 	drone.takeoff() # 自動で離陸しているが，ここはAlexaを使用して離陸させた方が良いかも(対話を開始するタイミングをトリガーさせるためにも)
 	
 	#Ctrl+cが押されるまでループ
@@ -35,13 +37,13 @@ def main():
 		while True:
 
 			# (A)画像取得
-			frame = drone.read()	# 映像を1フレーム取得
-			if frame is None or frame.size == 0:	# 中身がおかしかったら無視
-				continue 
+			# frame = drone.read()	# 映像を1フレーム取得
+			# if frame is None or frame.size == 0:	# 中身がおかしかったら無視
+			# 	continue 
 
 			# (B)ここから画像処理
-			image = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)		# OpenCV用のカラー並びに変換する
-			small_image = cv2.resize(image, dsize=(480,360) )	# 画像サイズを半分に変更
+			# image = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)		# OpenCV用のカラー並びに変換する
+			# small_image = cv2.resize(image, dsize=(480,360) )	# 画像サイズを半分に変更
 
 
 			# 関数として使えるように各チームで処理を作ること
@@ -49,29 +51,29 @@ def main():
 				# デフォルト状態でホバリングし，常に人を認識する．認識した時，statusを'approach'に変更する
 				
 				# デバッグ用
-				# time.sleep(2)
-				# print(drone.status)
-				# drone.to_approach()
+				time.sleep(1)
+				print(drone.status)
+				drone.to_approach()
 
 			if drone.status == 'approach':
 				# 認識した人に近づく．近づき終わったらstatusを'communicate'に変更する
 
 				# デバッグ用
-				# time.sleep(2)
-				# print(drone.status)
-				# drone.to_communicate()
+				time.sleep(1)
+				print(drone.status)
+				drone.to_communicate()
 
 			if drone.status == 'communicate':
 				# 人と対話する．対話が正常終了したらstatusを'default'に戻す．対話に失敗した場合はstatusを'judingpose'に
-				speak.mp3play('SystemPJ/ProcessVoice/speech_20191223054237114.mp3')
+				speak.mp3play('./ProcessVoice/speech_20191223054237114.mp3')
 				drone.subscribe() # 対話開始
 
 				# デバッグ用
 				# drone.to_default()
 				# drone.to_judingpose()
 				
-				time.sleep(20)
-				if drone.status == 'communicate': # 無言
+				time.sleep(15) # 対話時間
+				if drone.status == 'communicate': # 無言だった場合
 					drone.status = 'judingpose' # 人の姿勢を検出する
 				
 
@@ -79,40 +81,40 @@ def main():
 				# 人の姿勢を検出する．姿勢推定を行い人の状態の判定後，人に話しかけ，statusを'default'に戻す
 
 				# デバッグ用
-				# time.sleep(2)
-				# print(drone.status)
-				# drone.to_default()
+				time.sleep(1)
+				print(drone.status)
+				drone.to_default()
 
 
 			# 以下(X)(Y)(Z)は便宜的に記載した．システムで必要な処理ではない
 
 			# (X)ウィンドウに表示
-			cv2.imshow('OpenCV Window', small_image)	# ウィンドウに表示するイメージを変えれば色々表示できる
+			# cv2.imshow('OpenCV Window', small_image)	# ウィンドウに表示するイメージを変えれば色々表示できる
 
 			# (Y)OpenCVウィンドウでキー入力を1ms待つ
-			key = cv2.waitKey(1)
-			if key == 27:					# k が27(ESC)だったらwhileループを脱出，プログラム終了
-				break
-			elif key == ord('t'):
-				drone.takeoff()				# 離陸
-			elif key == ord('l'):
-				drone.land()				# 着陸
-			elif key == ord('w'):
-				drone.move_forward(0.3)		# 前進
-			elif key == ord('s'):
-				drone.move_backward(0.3)	# 後進
-			elif key == ord('a'):
-				drone.move_left(0.3)		# 左移動
-			elif key == ord('d'):
-				drone.move_right(0.3)		# 右移動
-			elif key == ord('q'):
-				drone.rotate_ccw(20)		# 左旋回
-			elif key == ord('e'):
-				drone.rotate_cw(20)			# 右旋回
-			elif key == ord('r'):
-				drone.move_up(0.3)			# 上昇
-			elif key == ord('f'):
-				drone.move_down(0.3)		# 下降
+			# key = cv2.waitKey(1)
+			# if key == 27:					# k が27(ESC)だったらwhileループを脱出，プログラム終了
+			# 	break
+			# elif key == ord('t'):
+			# 	drone.takeoff()				# 離陸
+			# elif key == ord('l'):
+			# 	drone.land()				# 着陸
+			# elif key == ord('w'):
+			# 	drone.move_forward(0.3)		# 前進
+			# elif key == ord('s'):
+			# 	drone.move_backward(0.3)	# 後進
+			# elif key == ord('a'):
+			# 	drone.move_left(0.3)		# 左移動
+			# elif key == ord('d'):
+			# 	drone.move_right(0.3)		# 右移動
+			# elif key == ord('q'):
+			# 	drone.rotate_ccw(20)		# 左旋回
+			# elif key == ord('e'):
+			# 	drone.rotate_cw(20)			# 右旋回
+			# elif key == ord('r'):
+			# 	drone.move_up(0.3)			# 上昇
+			# elif key == ord('f'):
+			# 	drone.move_down(0.3)		# 下降
 
 			# (Z)5秒おきに'command'を送って、死活チェックを通す
 			current_time = time.time()	# 現在時刻を取得
