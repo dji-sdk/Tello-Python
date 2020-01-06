@@ -1,0 +1,60 @@
+画像はここに
+.png .jpgは使える
+video -0でpc上のカメラから取り込み
+anaで仮想環境を使用　
+tinyでやってみても1fpsくらい？サイズ落とせばもっとあげれそう
+
+使用ソフト・データ　あったほうが良いのも含む
+anaconda 仮想環境構築
+keras-yolov3　深層学習用のライブラリ
+openpose 画像から人の骨格を解析する
+tensorflow2.0　pipも入っている　ここではcpuのみので
+cuda　ツール系　gpuを効率よく動かすために openposeに適応する
+atom　pyの編集用に
+visualstudio　ファイル変換用に　編集も
+yolov3(-tiny)　重みと分類のデータ
+python3.8 プログラム動かすために
+
+ここでの動作
+anacon起動して仮想環境設定
+そこからC:\Users\○○\Downloads\yolov3-tf2-master\yolov3-tf2-masterまで移動する
+写真の時
+python detect.py --image ./data/(写真名).jpg
+画像の時(PCカメラの場合)
+python detect_video.py --video 0
+で起動できる
+現状ではターミナル切らないと解除できない
+
+参考　https://www.koi.mashykom.com/tensorflow.html
+
+https://qiita.com/miu200521358/items/539aaa63f16869191508
+
+
+起動
+ドローンを起動させて動作環境をつなぐ
+その後救助モードで色々起動?　
+
+ドローンで動かすには　…このような動作方法でよい?
+画像情報と処理はpcで行うべき　速度的に　gpuあるほうが良い
+画像情報を受け動作を送ることになる
+ドローンのカメラで得た画像で人の情報を得る
+最初回転したらそのうち一番大きいところへと接近
+一定の大きさになったら話しかける
+
+
+人を見つける
+moving_method.py
+人のサイズ比を徐々に大きくする
+動作の設定に
+参考　https://qiita.com/umeee/items/c54a0b0aa49b2a37702d
+
+接近する
+approach.py
+簡易的な追尾も可能
+現状解像度をいじり同じところをimportで変化させたくらい
+参考　https://qiita.com/mozzio369/items/1f80103339faaedc6be3
+箱のxy座標を出したらその中心を画像の中心に近づけるみたいな方法が良い？
+
+画像をドローンとやり取りする
+detect_videoの改造でよい?
+参考　https://qiita.com/mozzio369/items/8e0fb12dc30c493f5cc4
