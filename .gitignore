@@ -6,3 +6,4 @@
 *.pem.key
 *.pem
 Single_Tello_Test/log/*
+*.so
