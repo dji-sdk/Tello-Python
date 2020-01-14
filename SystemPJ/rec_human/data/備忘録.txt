@@ -25,6 +25,12 @@ python detect_video.py --video 0
 で起動できる
 現状ではターミナル切らないと解除できない
 
+
+yolo.predict()でバウンディングボックス，スコア，クラスが取得可能
+格配列は(おそらく)スコアの高い順から並べられているので，classの配列に格納されている番号を参照してpersonのバウンディングボックスを探せば良い(personは0)
+classの番号は./data/coco.namesを参照
+
+
 参考　https://www.koi.mashykom.com/tensorflow.html
 
 https://qiita.com/miu200521358/items/539aaa63f16869191508
