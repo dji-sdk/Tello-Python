@@ -8,9 +8,10 @@ import sys
 # こんな感じでimportするようにしよう
 sys.path.append('./ProcessVoice')
 sys.path.append('./ProcessImage')
-sys.path.append('./Rechuman')
+sys.path.append('./rec_human')
 # import *
 import speak
+from approachModule import Approach 
 
 # ドローンのstatus定義
 # 'default': ホバリングする(初期状態)
@@ -57,11 +58,15 @@ def main():
 
 			if drone.status == 'approach':
 				# 認識した人に近づく．近づき終わったらstatusを'communicate'に変更する
-
-				# デバッグ用
-				time.sleep(1)
 				print(drone.status)
-				drone.to_communicate()
+
+				approach = Approach(drone) # Approachクラスのインスタンスを作成
+
+				approach.process() # droneが被災者に近づくためのメソッドをapproachが実行
+				drone.to_communicate # droneの状態をcommunicateに変更
+				# デバッグ用
+				# time.sleep(1)
+				# drone.to_communicate()
 
 			if drone.status == 'communicate':
 				# 人と対話する．対話が正常終了したらstatusを'default'に戻す．対話に失敗した場合はstatusを'judingpose'に
@@ -69,12 +74,12 @@ def main():
 				drone.subscribe() # 対話開始
 
 				# デバッグ用
-				# drone.to_default()
+				drone.to_default()
 				# drone.to_judingpose()
 				
-				time.sleep(15) # 対話時間
-				if drone.status == 'communicate': # 無言だった場合
-					drone.status = 'judingpose' # 人の姿勢を検出する
+				# time.sleep(15) # 対話時間
+				# if drone.status == 'communicate': # 無言だった場合
+				# 	drone.status = 'judingpose' # 人の姿勢を検出する
 				
 
 			if drone.status == 'judingpose':
