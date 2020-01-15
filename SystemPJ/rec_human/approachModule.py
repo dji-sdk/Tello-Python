@@ -25,6 +25,7 @@ class Approach:
 
     
 
+<<<<<<< HEAD
     def search(self):
         """
         被災者をyoloを用いて発見，bboxを作成するメソッド
@@ -35,3 +36,15 @@ class Approach:
         searchメソッドで得たbboxを元に，cv2のトラッキングを用いながら
         被災者に接近するメソッド
         """
+=======
+    # def search(self):
+    #     """
+    #     被災者をyoloを用いて発見，bboxを作成するメソッド
+    #     """
+
+    # def approach(self):
+    #     """
+    #     searchメソッドで得たbboxを元に，cv2のトラッキングを用いながら
+    #     被災者に接近するメソッド
+    #     """
+>>>>>>> Mizuki_branchi
