@@ -7,3 +7,4 @@
 *.pem
 Single_Tello_Test/log/*
 *.so
+SystemPJ/rec_human/checkpoints/yolov3.tf.data-00000-of-00001
