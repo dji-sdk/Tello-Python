@@ -10,4 +10,4 @@ class BatchNormalization(tf.keras.layers.BatchNormalization):
         if training is None:
             training = tf.constant(False)
         training = tf.logical_and(training, self.trainable)
-        return super().call(x, training)
+        return super(BatchNormalization,self).call(x, training)
