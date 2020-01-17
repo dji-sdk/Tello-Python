@@ -11,6 +11,7 @@ sys.path.append('./ProcessImage')
 sys.path.append('./rec_human')
 # import *
 import speak
+from defaultModule import Default
 from approachModule import Approach 
 
 # ドローンのstatus定義
@@ -24,6 +25,14 @@ def main():
 	# Telloクラスを使って，droneというインスタンス(実体)を作る
 	drone = Tello('', 8889, command_timeout=.01)  
 
+	# 人検知，接近用のインスタンス，フラグ，トラッカータイプ
+	default = Default(drone) # 人探索用のインスタンス作成
+	detect = False # 人を検知しているかどうか
+	close = False # 人に接近したかどうか
+
+	track_type = "KCF" # トラッカーのタイプ，ユーザーが指定
+
+	# 処理の開始
 	drone.send_command('command') # SDKモードを開始
 
 	current_time = time.time()	# 現在時刻の保存変数
@@ -53,20 +62,37 @@ def main():
 			# 関数として使えるように各チームで処理を作ること
 			if drone.status == 'default':
 				# デフォルト状態でホバリングし，常に人を認識する．認識した時，statusを'approach'に変更する
+				print(drone.status)
+
+				detect, bbox = default.detect(small_image) # 人を探し，検知したら領域をbboxに保存
+
+				if detect: # 人を検知後statusをapproachに変更
+					drone.to_approach() 
+					approach = Approach(drone, small_image, bbox, track_type) # Approachクラスのインスタンスを作成，トラッカーの初期化
 				
 				# デバッグ用
-				time.sleep(1)
-				print(drone.status)
-				drone.to_approach()
+				# time.sleep(1)
+				# print(drone.status)
+				# drone.to_approach()
 
 			if drone.status == 'approach':
 				# 認識した人に近づく．近づき終わったらstatusを'communicate'に変更する
 				print(drone.status)
+				detect, close = approach.approach(small_image) # 検知した人を追跡．結果を返す
 
-				approach = Approach(drone) # Approachクラスのインスタンスを作成
+				# 人を追跡できているか，または接近できたかどうかの判定
+				if detect and close: # 接近できていればstatusをcommunicateへ変更
+					drone.to_communicate()
+				elif not detect: # 追跡が失敗したらdefaultへ戻る
+					drone.to_default()
+					del approach # インスタンスを削除
+				else: # 例外処理
+					print("なんかエラーっぽいよ")
+					print("detect:" + str(detect))
+					print("close:" + str(close))
+					time.sleep(10)
 
-				approach.process() # droneが被災者に近づくためのメソッドをapproachが実行
-				drone.to_communicate # droneの状態をcommunicateに変更
+
 				# デバッグ用
 				# time.sleep(1)
 				# drone.to_communicate()
