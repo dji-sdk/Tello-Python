@@ -38,13 +38,16 @@ def main():
 		while True:
 
 			# (A)画像取得
-			# frame = drone.read()	# 映像を1フレーム取得
-			# if frame is None or frame.size == 0:	# 中身がおかしかったら無視
-			# 	continue 
+			frame = drone.read()	# 映像を1フレーム取得
+			if frame is None or frame.size == 0:	# 中身がおかしかったら無視
+				continue 
 
 			# (B)ここから画像処理
-			# image = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)		# OpenCV用のカラー並びに変換する
-			# small_image = cv2.resize(image, dsize=(480,360) )	# 画像サイズを半分に変更
+			image = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)		# OpenCV用のカラー並びに変換する
+			small_image = cv2.resize(image, dsize=(480,360) )	# 画像サイズを半分に変更
+
+			cv2.imshow("camera", small_image) # 名称が"camera"のウィンドウに画像を表示
+            cv2.waitKey(5) # よくわからんがこれを入れないと画像が正しく表示されない
 
 
 			# 関数として使えるように各チームで処理を作ること
