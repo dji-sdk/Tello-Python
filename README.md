@@ -1,44 +1,123 @@
-# Tello-Python
+# Tello-Video
 
-## Introduction
+This is an example using the Tello SDK v1.3.0.0 and above to receive video stream from Tello camera,decode the video stream and show the image by GUI.
 
-This is a collection of python-based sample code that interact with the Ryze Tello drone.
+ - Written in Python 2.7
+ - Tello SDK v1.3.0.0 and above(with h.264 video streaming)
+ - This example includes a simple UI build with Tkinter to interact with Tello
+ - Interactive control of Tello based on human movement is achieved via body pose recognition module.
 
+## Prerequisites
+
+- Python2.7
+- pip
+- Python OpenCV
+- Numpy 
+- PIL
+- libboost-python
+- Tkinter
+- homebrew(for mac)
+- Python h264 decoder
+    - <https://github.com/DaWelter/h264decoder>
+
+## Installation
+
+In order to facilitate you to install python2.7 and various dependencies, we have written a one-click installation script for windows, Linux and macos. You can choose to run this script for the one-click installation, or you can download python2.7 and related libraries and dependencies online. If you have questions about the actions that the script performs, you can open the script with an editor and look up the comments for each instruction in the script. In addition, we have additionally written an uninstall script that cleans and restores all downloaded and configured content from the one-click installation script.
+
+- **Windows**
+
+    Go to the "install\Windows" folder,select and run the correct  "windows_install.bat" according to your computer operating system bits. 
+
+- **Linux (Ubuntu 14.04 and above)**
+
+    Go to the "install\Linux" folder in command line, run
+    
+    ```
+    chmod +x linux_install.sh
+    ./linux_install.sh
+    ```
+
+- **Mac**
+
+   1. Make sure you have the latest Xcode command line tools installed. If not, you might need to update your OS X and XCode to the latest version in order to compile the h264 decoder module
+   2. Go to the "install\Mac" folder folder in command line, run
+   
+  ```
+     chmod a+x ./mac_install.sh
+     ./mac_install.sh
+  ```
+    
+    If you see no errors during installation, you are good to go!
+
+## Run the project
+- **Step1**. Turn on Tello and connect your computer device to Tello via wifi.
+
+
+- **Step2**. Open project folder in terminal. Run:
+    
+    ```
+    python main.py
+    ```
+
+- **Step3**. A UI will show up, you can now:
+
+    - Watch live video stream from the Tello camera;
+    - Take snapshot and save jpg to local folder;
+    - Open Command Panel, which allows you to:
+        - Take Off
+        - Land
+        - Flip (in forward, backward, left and right direction)
+        - Control Tello using keyboard inputs:
+            - **[key-Up]** move forward 20cm
+            - **[key-Down]** move backward 20cm
+            - **[key-Left]** move left 20 cm
+            - **[key-Right]** move right 20 cm
+            - **[key-w]** move up 20cm
+            - **[key-s]** move down 20cm
+            - **[key-a]** rotate counter-clockwise by 30 degree
+            - **[key-d]** rotate clockwise by 30 degree
+        -  You can also adjust the **distance** and **degree** via the trackbar and hit the "reset distance" or "reset degree" button to customize your own control.
+    
 ## Project Description
 
-This toolkit contains three sample programs based on tello sdk and python2.7,including Single_Tello_Test, Tello_Video, and Tello_Video (With_Pose_Recognition). There is also a program file named tello_state.py.
+### tello.py - class Tello
 
-- **Single_Tello_Test**
+Wrapper class to interact with Tello drone.
+Modified from <https://github.com/microlinux/tello>
 
- In Single_Tello_Test,You can design a series of command combinations by writing a txt script to let tello execute a series of actions you have designed. This program can also be used as a command set test tool for tello.
+The object starts 2 threads:
 
-- **Tello_Video**
+ 1. thread for receiving command response from Tello
+ 2. thread for receiving video stream
 
- In Tello_Video，You can receive the video stream data from tello, decode the video through the h264 decoding library, and display it on a GUI interface based on Tkinter and PIL. In addition, it also supports a control panel that can operate tello. This sample code provides an example of receiving and processing and getting the correct video data. The source code of the h264 decoding library is also provided in the package, which can be used for your reference.
+You can use **read()** to read the last frame from Tello camera, and pause the video by setting **video_freeze(is_freeze=True)**.
 
-- **Tello_Video(With_Pose_Recognition)**
+### tello_control_ui.py - class TelloUI
 
- Tello_Video_With_Pose_Recognition is an application version modified from Tello_Video.It uses the decoded video data，and everytime extract a single frame image for pose recognition operation , and binds the specific posture and aircraft control commands to realize the pose control of Tello.This code is mainly used as an application case for utilizing the decoded video data of tello for image processing.
+Modified from: https://www.pyimagesearch.com/2016/05/30/displaying-a-video-feed-with-opencv-and-tkinter/
 
-- **Tello_state.py**
+Build with Tkinter. Display video, control video play/pause and control Tello using buttons and arrow keys.
 
- Tello_state.py can read the various status data of tello, and can be used as a tool to debug and view the status of tello.
+### h264decoder - class libh264decoder
 
-## Environmental configuration
+From <https://github.com/DaWelter/h264decoder>.
 
-The sample codes above are based on python2.7.There is no need to install additional third-party libraries for running Single_Tello_Test and tello_state.py.For Tello_Video and Tello_Video (With_Pose_Recognition), you need to install a series of third-party libraries. Therefore, in these two folders, a one-click installation script (based on windows32/64, linux and macos) is provided, which can facilitate you with installing all relevant dependencies.
+A c++ based class that decodes raw h264 data. This module interacts with python language via python-libboost library, and its decoding functionality is based on ffmpeg library. 
 
-Specific to the content and description of each package, you can refer to the readme file in the related folder. 
- 
-## Contact Information
+After compilation, a libh264decoder.so or libh264decoder.pyd file will be placed in the working directory so that the main python file can reference it. 
+
+If you have to compile it from source,with Linux or Mac,you can:
+
+```
+cd h264decoder
+mkdir build
+cd build
+cmake ..
+make
+cp libh264decoder.so ../../
+```
+With Windows,you can create a project through visual studio, add files in h264decoder and dependencies such as ffmpeg and libboost, compile the project and generate a libh264decoder.pyd file.We have generated a libh264decoder.pyd and put it in the "\h264decoder\Windows"foleder so that you can copy put it to "python/site-package".
+
+##Contact Information
 
 If you have any questions about this sample code and the installation, please feel free to contact me. You can communicate with me by sending e-mail to sdk@ryzerobotics.com.
-And recently we have committed a new FAQ file under the 'Tello-Python'.If you have any questions,you can firstly refer to it .
-
-## About Multi-Tello-Formation
-
-Please refer to github repository https://github.com/TelloSDK/Multi-Tello-Formation.
-This is a python program that enable the function of multi-tello swarms. 
-
-
-
