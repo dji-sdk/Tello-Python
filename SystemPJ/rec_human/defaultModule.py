@@ -28,10 +28,13 @@ class Default:
                 カメラ画像
 
         Return:
-            success bool:
-                人が検知できたかどうか
-
             bbox int:
                 検知した人の領域
         """
-        return success, bbox
+
+
+
+
+
+        # 人を検知後，self.drone.detect_flagを立てる
+        return bbox

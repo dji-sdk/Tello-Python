@@ -50,7 +50,8 @@ class Approach:
                 追跡が終了したかどうか
         """
 
-        return success, close
+        # 追跡が失敗した場合にdrone.detect_flagを倒す
+        # 追跡が成功し，接近できた場合にはdrone.close_flagを立てる
 
 
     def select_tracker(self, track_type):

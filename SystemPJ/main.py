@@ -27,8 +27,7 @@ def main():
 
 	# 人検知，接近用のインスタンス，フラグ，トラッカータイプ
 	default = Default(drone) # 人探索用のインスタンス作成
-	detect = False # 人を検知しているかどうか
-	close = False # 人に接近したかどうか
+	
 
 	track_type = "KCF" # トラッカーのタイプ，ユーザーが指定
 
@@ -64,7 +63,7 @@ def main():
 				# デフォルト状態でホバリングし，常に人を認識する．認識した時，statusを'approach'に変更する
 				print(drone.status)
 
-				detect, bbox = default.detect(small_image) # 人を探し，検知したら領域をbboxに保存
+				bbox = default.detect(small_image) # 人を探し，検知したら領域をbboxに保存
 
 				if detect: # 人を検知後statusをapproachに変更
 					drone.to_approach() 
@@ -78,12 +77,12 @@ def main():
 			if drone.status == 'approach':
 				# 認識した人に近づく．近づき終わったらstatusを'communicate'に変更する
 				print(drone.status)
-				detect, close = approach.approach(small_image) # 検知した人を追跡．結果を返す
+				approach.approach(small_image) # 検知した人を追跡．結果を返す
 
 				# 人を追跡できているか，または接近できたかどうかの判定
-				if detect and close: # 接近できていればstatusをcommunicateへ変更
+				if drone.detect_flag and drone.close_flag: # 接近できていればstatusをcommunicateへ変更
 					drone.to_communicate()
-				elif not detect: # 追跡が失敗したらdefaultへ戻る
+				elif not drone.detect_flag: # 追跡が失敗したらdefaultへ戻る
 					drone.to_default()
 					del approach # インスタンスを削除
 				else: # 例外処理
