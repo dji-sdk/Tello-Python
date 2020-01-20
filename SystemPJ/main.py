@@ -84,7 +84,9 @@ def main():
 					drone.to_communicate()
 				elif not drone.detect_flag: # 追跡が失敗したらdefaultへ戻る
 					drone.to_default()
-					del approach # インスタンスを削除
+					del approach # Approachクラスのインスタンスを削除
+				elif drone.detect_flag and not drone.close_flag: # 追跡しているが接近していないならapproachを続ける
+					continue
 				else: # 例外処理
 					print("なんかエラーっぽいよ")
 					print("detect:" + str(detect))
