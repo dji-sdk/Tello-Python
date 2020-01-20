@@ -55,7 +55,7 @@ def main():
 			small_image = cv2.resize(image, dsize=(480,360) )	# 画像サイズを半分に変更
 
 			cv2.imshow("camera", small_image) # 名称が"camera"のウィンドウに画像を表示
-            cv2.waitKey(5) # よくわからんがこれを入れないと画像が正しく表示されない
+			cv2.waitKey(5) # よくわからんがこれを入れないと画像が正しく表示されない
 
 
 			# 関数として使えるように各チームで処理を作ること
@@ -65,9 +65,10 @@ def main():
 
 				bbox = default.detect(small_image) # 人を探し，検知したら領域をbboxに保存
 
-				if detect: # 人を検知後statusをapproachに変更
+				if drone.detect_flag: # 人を検知後statusをapproachに変更
 					drone.to_approach() 
 					approach = Approach(drone, small_image, bbox, track_type) # Approachクラスのインスタンスを作成，トラッカーの初期化
+					continue
 				
 				# デバッグ用
 				# time.sleep(1)
@@ -89,8 +90,8 @@ def main():
 					continue
 				else: # 例外処理
 					print("なんかエラーっぽいよ")
-					print("detect:" + str(detect))
-					print("close:" + str(close))
+					print("detect:" + str(drone.detect_flag))
+					print("close:" + str(drone.close_flag))
 					time.sleep(10)
 
 

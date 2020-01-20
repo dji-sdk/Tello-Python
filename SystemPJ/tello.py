@@ -26,6 +26,9 @@ class Tello:
 
         self.status = 'default'
 
+        self.detect_flag = False # 人の検知フラグ
+        self.close_flag = False # 人の接近フラグ
+
         self.abort_flag = False     # 中断フラグ
         self.decoder = libh264decoder.H264Decoder() # H.264のデコード関数を登録
         self.command_timeout = command_timeout      # タイムアウトまでの時間

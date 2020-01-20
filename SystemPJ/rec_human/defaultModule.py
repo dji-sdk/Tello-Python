@@ -31,10 +31,13 @@ class Default:
             bbox int:
                 検知した人の領域
         """
+        bound = None
 
 
 
 
 
-        # 人を検知後，self.drone.detect_flagを立てる
-        return bbox
+
+
+        # 人を検知後，self.drone.detect_flag を立てる
+        return bound
