@@ -4,7 +4,7 @@ import time
 
 class Tello:
     def __init__(self):
-        self.local_ip = '192.168.10.2'
+        self.local_ip = ''
         self.local_port = 8889
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # socket for sending cmd
         self.socket.bind((self.local_ip, self.local_port))
