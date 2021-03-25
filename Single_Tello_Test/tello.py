@@ -22,7 +22,7 @@ class Tello:
 
     def send_command(self, command):
 
-        self.response_available = threading.clear() # reset the flag
+        self.response_available.clear() # reset the flag
 
         print('[%s] Sending command: %s to %s' % (time.ctime(), command, self.tello_ip))
         self.socket.sendto(command.encode('utf-8'), self.tello_address)
