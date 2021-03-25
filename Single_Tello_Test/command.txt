@@ -1,4 +1,6 @@
 command
 takeoff
-delay 5
+curve 50 0 50 100 0 0 60
+curve -50 0 -50 -100 0 0 60
+flip f
 land

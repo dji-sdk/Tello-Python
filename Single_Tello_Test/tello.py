@@ -1,7 +1,6 @@
 import socket
 import threading
 import time
-from stats import Stats
 
 class Tello:
     def __init__(self):
@@ -17,58 +16,25 @@ class Tello:
 
         self.tello_ip = '192.168.10.1'
         self.tello_port = 8889
-        self.tello_adderss = (self.tello_ip, self.tello_port)
-        self.log = []
+        self.tello_address = (self.tello_ip, self.tello_port)
+        self.response_available = threading.Event() # flag to signal when the response has been received
 
-        self.MAX_TIME_OUT = 15.0
 
     def send_command(self, command):
-        """
-        Send a command to the ip address. Will be blocked until
-        the last command receives an 'OK'.
-        If the command fails (either b/c time out or error),
-        will try to resend the command
-        :param command: (str) the command to send
-        :param ip: (str) the ip of Tello
-        :return: The latest command response
-        """
-        self.log.append(Stats(command, len(self.log)))
 
-        self.socket.sendto(command.encode('utf-8'), self.tello_adderss)
-        print 'sending command: %s to %s' % (command, self.tello_ip)
+        self.response_available.clear() # reset the flag
 
-        start = time.time()
-        while not self.log[-1].got_response():
-            now = time.time()
-            diff = now - start
-            if diff > self.MAX_TIME_OUT:
-                print 'Max timeout exceeded... command %s' % command
-                # TODO: is timeout considered failure or next command still get executed
-                # now, next one got executed
-                return
-        print 'Done!!! sent command: %s to %s' % (command, self.tello_ip)
+        print('[%s] Sending command: %s to %s' % (time.ctime(), command, self.tello_ip))
+        self.socket.sendto(command.encode('utf-8'), self.tello_address)
+
+        self.response_available.wait() # block until the response has been received (TODO: Add a timeout for the request)
+
 
     def _receive_thread(self):
-        """Listen to responses from the Tello.
-
-        Runs as a thread, sets self.response to whatever the Tello last returned.
-
-        """
         while True:
             try:
                 self.response, ip = self.socket.recvfrom(1024)
-                print('from %s: %s' % (ip, self.response))
-
-                self.log[-1].add_response(self.response)
-            except socket.error, exc:
-                print "Caught exception socket.error : %s" % exc
-
-    def on_close(self):
-        pass
-        # for ip in self.tello_ip_list:
-        #     self.socket.sendto('land'.encode('utf-8'), (ip, 8889))
-        # self.socket.close()
-
-    def get_log(self):
-        return self.log
-
+                self.response_available.set() # signal that the response has been received
+                print('[%s] Received from %s: %s\n' % (time.ctime(), ip, self.response))
+            except socket.error as exc:
+                print("Caught exception socket.error: %s" % exc)
