@@ -22,9 +22,9 @@ if __name__ == "__main__":
 
     tello_ip = '192.168.10.1'
     tello_port = 8889
-    tello_adderss = (tello_ip, tello_port)
+    tello_address = (tello_ip, tello_port)
 
-    socket.sendto('command'.encode('utf-8'), tello_adderss)
+    socket.sendto('command'.encode('utf-8'), tello_address)
 
     try:
         index = 0
