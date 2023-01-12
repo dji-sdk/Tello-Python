@@ -51,7 +51,7 @@ In order to facilitate you to install python2.7 and various dependencies, we hav
 
 ## Get the Model
 
-You can get the pose recognition model by run the script named "getModels.bat" or "getModels.bat"(according to your os type) under the path of "./model/".And it will take some time to download the model.
+You can get the pose recognition model by run the script named "getModels.bat" or "getModels.sh"(according to your os type) under the path of "./model/".And it will take some time to download the model.
 
 
 ## Run the project
